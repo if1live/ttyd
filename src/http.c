@@ -81,6 +81,41 @@ callback_http(struct lws *wsi, enum lws_callback_reasons reason, void *user, voi
             p = buffer + LWS_PRE;
             end = p + sizeof(buffer) - LWS_PRE;
 
+            // for static file, ex: webfont
+            if (strncmp((const char *) in, "/static/", 8) == 0) {
+                char *static_path = in + 8;
+                // example: ~/bin/ttyd/static/
+                char *static_root = getenv("TTYD_STATIC_ROOT");
+                if (static_root == NULL) {
+                    lws_return_http_status(wsi, HTTP_STATUS_NOT_FOUND, NULL);
+                    goto try_to_reuse;
+                }
+
+                char filepath[1024];
+                sprintf(filepath, "%s/%s", static_root, static_path);
+
+                char *ext = strrchr(in, '.');
+                char *mime = NULL;
+                if (ext == NULL) {
+                    mime = "text/plain";
+                } else if (strcmp(ext, ".css") == 0) {
+                    mime = "text/css";
+                } else if (strcmp(ext, ".ttf") == 0) {
+                    mime = "font/ttf";
+                } else if (strcmp(ext, ".eot") == 0) {
+                    mime = "font/eot";
+                } else if (strcmp(ext, ".otf") == 0) {
+                    mime = "font/otf";
+                } else if (strcmp(ext, ".woff") == 0) {
+                    mime = "font/woff";
+                } else {
+                    mime = "text/plain";
+                }
+
+                lws_serve_http_file(wsi, filepath, mime, NULL, 0);
+                return 1;
+            }
+
             if (strncmp(pss->path, "/auth_token.js", 14) == 0) {
                 size_t n = server->credential != NULL ? sprintf(buf, "var tty_auth_token = '%s';", server->credential) : 0;
 
