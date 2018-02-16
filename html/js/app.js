@@ -12,6 +12,8 @@ Terminal.applyAddon(require('xterm/lib/addons/fit'));
 Terminal.applyAddon(require('xterm/lib/addons/winptyCompat'));
 Terminal.applyAddon(require('./overlay'));
 
+var FontFaceOnload = require('fontfaceonload');
+
 var modal = {
     self: document.getElementById('modal'),
     header: document.getElementById('header'),
@@ -365,8 +367,22 @@ var openWs = function() {
     };
 };
 
-if (document.readyState === 'complete' || document.readyState !== 'loading') {
-    openWs();
-} else {
-    document.addEventListener('DOMContentLoaded', openWs);
+function myInitialize() {
+    FontFaceOnload('D2 coding', {
+        success: function() {
+            console.log('font loaded');
+            openWs();
+        },
+        error: function() {
+            console.log('font load fail, use default font');
+            openWs();
+        },
+    });
 }
+
+if (document.readyState === 'complete' || document.readyState !== 'loading') {
+    myInitialize();
+} else {
+    document.addEventListener('DOMContentLoaded', myInitialize);
+}
+
