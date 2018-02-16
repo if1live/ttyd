@@ -139,7 +139,10 @@ thread_run_command(void *args) {
             lwsl_err("forkpty, error: %d (%s)\n", errno, strerror(errno));
             break;
         case 0: /* child */
-            if (setenv("TERM", "xterm-256color", true) < 0) {
+            // In chromebook, xterm-256color + spacemacs is slow
+            // (tested device: Acer R11 chromebook)
+            // For performance, I use 'xterm'
+            if (setenv("TERM", "xterm", true) < 0) {
                 perror("setenv");
                 pthread_exit((void *) 1);
             }
