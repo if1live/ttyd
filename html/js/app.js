@@ -301,8 +301,15 @@ var openWs = function() {
 
         term.open(terminalContainer, true);
         term.winptyCompatInit();
+
+        // use scroll bar area as text area
+        term.viewport.scrollBarWidth = 0;
+
         term.fit();
         term.focus();
+
+        // register term to global variable, for development
+        window.term = term;
     };
 
     ws.onmessage = function(event) {
