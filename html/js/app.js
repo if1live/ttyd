@@ -245,7 +245,9 @@ var openWs = function() {
 
         term = new Terminal({
             fontSize: 13,
-            fontFamily: '"Menlo for Powerline", Menlo, Consolas, "Liberation Mono", Courier, monospace',
+            // fontFamily: '"Menlo for Powerline", Menlo, Consolas, "Liberation Mono", Courier, monospace',
+            //fontFamily: 'D2Coding, "D2 coding", monosapce',
+            fontFamily: 'D2Coding, "D2 coding", "Menlo for Powerline", Menlo, Consolas, "Liberation Mono", Courier, monospace',
             theme: {
                 foreground: '#d2d2d2',
                 background: '#2b2b2b',
